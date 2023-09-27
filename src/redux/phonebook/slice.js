@@ -4,7 +4,7 @@ import {
   fetchContactsThunk,
 } from './operations';
 
-const { createSlice } = require('@reduxjs/toolkit');
+const { createSlice, isAnyOf } = require('@reduxjs/toolkit');
 
 const initialState = {
   contacts: {
@@ -35,7 +35,39 @@ const slice = createSlice({
         state.contacts.items = state.contacts.items.filter(
           contact => contact.id !== payload
         );
-      });
+      })
+      .addMatcher(
+        isAnyOf(
+          fetchContactsThunk.fulfilled,
+          deleteContactThunk.fulfilled,
+          addContactThunk.fulfilled
+        ),
+        (state, action) => {
+          state.contacts.isLoading = false;
+        }
+      )
+      .addMatcher(
+        isAnyOf(
+          fetchContactsThunk.pending,
+          deleteContactThunk.pending,
+          addContactThunk.pending
+        ),
+        (state, action) => {
+          state.contacts.isLoading = true;
+          state.contacts.error = null;
+        }
+      )
+      .addMatcher(
+        isAnyOf(
+          fetchContactsThunk.rejected,
+          deleteContactThunk.rejected,
+          addContactThunk.rejected
+        ),
+        (state, action) => {
+          state.contacts.error = action.payload;
+          state.contacts.isLoading = false;
+        }
+      );
   },
 });
 

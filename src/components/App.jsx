@@ -5,12 +5,7 @@ import { StyledSubTitle, StyledTitle, StyledWrapper } from 'styles/App.styled';
 import { Form } from './ContactForm/Form';
 import { useDispatch, useSelector } from 'react-redux';
 import { setFilter } from 'redux/phonebook/slice';
-import {
-  selectContacts,
-  selectError,
-  selectFilter,
-  selectLoading,
-} from 'redux/selectors';
+import { selectContacts, selectFilter } from 'redux/selectors';
 import {
   addContactThunk,
   fetchContactsThunk,
@@ -21,8 +16,6 @@ export const App = () => {
   const dispatch = useDispatch();
   const contacts = useSelector(selectContacts);
   const filter = useSelector(selectFilter);
-  const loading = useSelector(selectLoading);
-  const error = useSelector(selectError);
 
   useEffect(() => {
     dispatch(fetchContactsThunk());

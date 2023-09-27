@@ -1,17 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { StyledContactBtn, StyledItem } from './ContactList.styled';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { deleteContactThunk } from 'redux/phonebook/operations';
+import { selectError, selectLoading } from 'redux/selectors';
 
 export const ContactList = ({ contacts }) => {
   const dispatch = useDispatch();
+  const loading = useSelector(selectLoading);
+  const error = useSelector(selectError);
+
   const handleContactDelete = id => {
     dispatch(deleteContactThunk(id));
   };
   return (
     <div>
       <ul>
+        {loading && <h1>Loading...</h1>}
+        {error && <h1>Something went wrong..</h1>}
         {contacts.map(contact => (
           <StyledItem key={contact.id}>
             {contact.name}: {contact.number}
