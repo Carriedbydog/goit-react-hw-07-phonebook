@@ -1,7 +1,17 @@
+import {
+  addContactThunk,
+  deleteContactThunk,
+  fetchContactsThunk,
+} from './operations';
+
 const { createSlice } = require('@reduxjs/toolkit');
 
 const initialState = {
-  contacts: [],
+  contacts: {
+    items: [],
+    isLoading: false,
+    error: null,
+  },
   filter: '',
 };
 
@@ -9,17 +19,23 @@ const slice = createSlice({
   name: 'contacts',
   initialState,
   reducers: {
-    addContact(state, action) {
-      state.contacts.push(action.payload);
+    setFilter(state, { payload }) {
+      state.filter = payload;
     },
-    setFilter(state, action) {
-      state.filter = action.payload;
-    },
-    deleteContact(state, action) {
-      state.contacts = state.contacts.filter(
-        contact => contact.id !== action.payload
-      );
-    },
+  },
+  extraReducers: builder => {
+    builder
+      .addCase(fetchContactsThunk.fulfilled, (state, { payload }) => {
+        state.contacts.items = payload;
+      })
+      .addCase(addContactThunk.fulfilled, (state, { payload }) => {
+        state.contacts.items.push(payload);
+      })
+      .addCase(deleteContactThunk.fulfilled, (state, { payload }) => {
+        state.contacts.items = state.contacts.items.filter(
+          contact => contact.id !== payload
+        );
+      });
   },
 });
 

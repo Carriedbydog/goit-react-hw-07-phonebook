@@ -1,8 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { StyledContactBtn, StyledItem } from './ContactList.styled';
+import { useDispatch } from 'react-redux';
+import { deleteContactThunk } from 'redux/phonebook/operations';
 
-export const ContactList = ({ contacts = [], onDelete }) => {
+export const ContactList = ({ contacts }) => {
+  const dispatch = useDispatch();
+  const handleContactDelete = id => {
+    dispatch(deleteContactThunk(id));
+  };
   return (
     <div>
       <ul>
@@ -10,7 +16,7 @@ export const ContactList = ({ contacts = [], onDelete }) => {
           <StyledItem key={contact.id}>
             {contact.name}: {contact.number}
             <StyledContactBtn
-              onClick={() => onDelete(contact.id)}
+              onClick={() => handleContactDelete(contact.id)}
               type="button"
             >
               Delete
@@ -30,5 +36,4 @@ ContactList.propTypes = {
       number: PropTypes.string,
     })
   ),
-  onDelete: PropTypes.func,
 };

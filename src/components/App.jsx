@@ -4,19 +4,34 @@ import { nanoid } from 'nanoid';
 import { StyledSubTitle, StyledTitle, StyledWrapper } from 'styles/App.styled';
 import { Form } from './ContactForm/Form';
 import { useDispatch, useSelector } from 'react-redux';
-import { addContact, deleteContact, setFilter } from 'redux/phonebook/slice';
-import { selectContacts, selectFilter } from 'redux/phonebook/selectors';
+import { setFilter } from 'redux/phonebook/slice';
+import {
+  selectContacts,
+  selectError,
+  selectFilter,
+  selectLoading,
+} from 'redux/selectors';
+import {
+  addContactThunk,
+  fetchContactsThunk,
+} from 'redux/phonebook/operations';
+import { useEffect } from 'react';
 
 export const App = () => {
   const dispatch = useDispatch();
   const contacts = useSelector(selectContacts);
   const filter = useSelector(selectFilter);
+  const loading = useSelector(selectLoading);
+  const error = useSelector(selectError);
+
+  useEffect(() => {
+    dispatch(fetchContactsThunk());
+  }, [dispatch]);
 
   const handleAddContact = (name, number) => {
     const item = contacts.find(
       item => item.name.toLowerCase() === name.toLowerCase()
     );
-
     if (item) {
       alert(`${name} is already in contacts`);
       return;
@@ -28,7 +43,7 @@ export const App = () => {
       id: nanoid(),
     };
 
-    dispatch(addContact(contact));
+    dispatch(addContactThunk(contact));
   };
 
   const handleChangeFilter = e => {
@@ -40,9 +55,7 @@ export const App = () => {
       contact.name.toLowerCase().includes(normalizedFilter)
     );
   };
-  const handleContactDelete = id => {
-    dispatch(deleteContact(id));
-  };
+
   return (
     <div
       style={{
@@ -58,11 +71,8 @@ export const App = () => {
         <StyledTitle>PhoneBook</StyledTitle>
         <Form handleAddContact={handleAddContact} />
         <StyledSubTitle>Contacts</StyledSubTitle>
-        <Filter inputFilterData={handleChangeFilter} filterValue={filter} />
-        <ContactList
-          contacts={filterContacts()}
-          onDelete={handleContactDelete}
-        />
+        <Filter inputFilterData={handleChangeFilter} />
+        <ContactList contacts={filterContacts()} />
       </StyledWrapper>
     </div>
   );
