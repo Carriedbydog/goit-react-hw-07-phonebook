@@ -11,7 +11,7 @@ export const Filter = ({ inputFilterData }) => {
   return (
     <StyledFilter>
       <StyledLabel>
-        Find contacts by name
+        Find contacts by name:
         <StyledInput
           type="text"
           value={filter}
