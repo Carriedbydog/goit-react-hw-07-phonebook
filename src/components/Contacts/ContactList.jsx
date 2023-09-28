@@ -15,9 +15,9 @@ export const ContactList = ({ contacts }) => {
   };
   return (
     <div>
+      {loading && <h1>Loading...</h1>}
+      {error && <h1>Something went wrong..</h1>}
       <ul>
-        {loading && <h1>Loading...</h1>}
-        {error && <h1>Something went wrong..</h1>}
         {contacts.map(contact => (
           <StyledItem key={contact.id}>
             {contact.name}: {contact.number}

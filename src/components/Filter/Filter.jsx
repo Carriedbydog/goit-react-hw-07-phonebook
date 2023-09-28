@@ -24,6 +24,5 @@ export const Filter = ({ inputFilterData }) => {
 };
 
 Filter.propTypes = {
-  filterValue: PropTypes.string,
   inputFilterData: PropTypes.func,
 };
